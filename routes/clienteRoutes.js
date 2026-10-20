@@ -53,4 +53,21 @@ router.post("/", (req, res) => {
   res.redirect("/clientes");
 });
 
+router.get("/excluir/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  clientes = clientes.filter(c => c.id !== id);
+  res.redirect("/clientes");
+});
+
+router.get("/editar/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let cliente = clientes.find(c => c.id === id);
+
+  if(!cliente) {
+    return res.redirect("/clientes");
+  }
+
+  res.render("clientes/editar", { cliente });
+});
+
 module.exports = router;
