@@ -33,7 +33,8 @@ let categorias = [
 router.get("/", (req, res) => {
 
   res.render("categorias/index", {
-    categorias: categorias
+    categorias: categorias,
+    currentPath: req.originalUrl || req.path
   });
 
 });
@@ -46,7 +47,7 @@ router.get("/", (req, res) => {
 
 router.get("/cadastro", (req, res) => {
 
-  res.render("categorias/form-cadastro");
+  res.render("categorias/form-cadastro", { currentPath: req.originalUrl || req.path });
 
 });
 
@@ -83,9 +84,24 @@ router.get("/editar/:id", (req, res) => {
     return res.redirect("/categorias");
   }
 
-  res.render("categorias/editar", { categoria });
+  res.render("categorias/editar", { categoria, currentPath: req.originalUrl || req.path });
 });
 
 // editar - efetiva - POST
+router.post("/editar/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let categoria = categorias.find(c => c.id === id);
+
+  if (!categoria) {
+    return res.redirect("/categorias");
+  }
+
+  const { nome, descricao } = req.body;
+
+  categoria.nome = nome;
+  categoria.descricao = descricao;
+
+  res.redirect("/categorias");
+});
 
 module.exports = router;

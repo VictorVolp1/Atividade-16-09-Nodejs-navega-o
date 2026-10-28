@@ -32,14 +32,15 @@ let produtos = [
 router.get("/", (req, res) => {
 
   res.render("produtos/index", {
-    produtos: produtos
+    produtos: produtos,
+    currentPath: req.originalUrl || req.path
   });
 
 });
 
 router.get("/cadastrar", (req, res) => {
 
-  res.render("produtos/form-cadastro");
+  res.render("produtos/form-cadastro", { currentPath: req.originalUrl || req.path });
 
 });
 
@@ -71,7 +72,26 @@ router.get("/editar/:id", (req, res) => {
     return res.redirect("/produtos");
   }
 
-  res.render("produtos/editar", { produto });
+  res.render("produtos/editar", { produto, currentPath: req.originalUrl || req.path });
+});
+
+router.post("/editar/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let produto = produtos.find(p => p.id === id);
+
+  if (!produto) {
+    return res.redirect("/produtos");
+  }
+
+  const { nome, descricao, preco, estoque, categoria } = req.body;
+
+  produto.nome = nome;
+  produto.descricao = descricao;
+  produto.preco = preco;
+  produto.estoque = estoque;
+  produto.categoria = categoria;
+
+  res.redirect("/produtos");
 });
 
 module.exports = router;

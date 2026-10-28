@@ -29,14 +29,15 @@ let clientes = [
 router.get("/", (req, res) => {
 
   res.render("clientes/index", {
-    clientes: clientes
+    clientes: clientes,
+    currentPath: req.originalUrl || req.path
   });
 
 });
 
 router.get("/cadastrar", (req, res) => {
 
-  res.render("clientes/form-cadastro");
+  res.render("clientes/form-cadastro", { currentPath: req.originalUrl || req.path });
 
 });
 
@@ -67,7 +68,25 @@ router.get("/editar/:id", (req, res) => {
     return res.redirect("/clientes");
   }
 
-  res.render("clientes/editar", { cliente });
+  res.render("clientes/editar", { cliente, currentPath: req.originalUrl || req.path });
+});
+
+router.post("/editar/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let cliente = clientes.find(c => c.id === id);
+
+  if (!cliente) {
+    return res.redirect("/clientes");
+  }
+
+  const { nome, email, telefone, cidade } = req.body;
+
+  cliente.nome = nome;
+  cliente.email = email;
+  cliente.telefone = telefone;
+  cliente.cidade = cidade;
+
+  res.redirect("/clientes");
 });
 
 module.exports = router;

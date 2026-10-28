@@ -19,6 +19,11 @@ app.set(
 // MIDDLEWARES
 // ========================================
 
+app.use((req, res, next) => {
+    res.locals.currentPath = req.originalUrl || req.path;
+    next();
+});
+
 // Permite receber dados enviados por formulário
 app.use(express.urlencoded({ extended: true }));
 
@@ -47,7 +52,7 @@ app.use("/produtos", produtoRoutes);
 
 app.get("/", (req, res) => {
 
-    res.render("index");
+    res.render("index", { currentPath: req.originalUrl || req.path });
 
 });
 

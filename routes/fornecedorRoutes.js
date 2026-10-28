@@ -32,14 +32,15 @@ let fornecedores = [
 router.get("/", (req, res) => {
 
   res.render("fornecedores/index", {
-    fornecedores: fornecedores
+    fornecedores: fornecedores,
+    currentPath: req.originalUrl || req.path
   });
 
 });
 
 router.get("/cadastrar", (req, res) => {
 
-  res.render("fornecedores/form-cadastro");
+  res.render("fornecedores/form-cadastro", { currentPath: req.originalUrl || req.path });
 
 });
 
@@ -71,7 +72,26 @@ router.get("/editar/:id", (req, res) => {
     return res.redirect("/fornecedores");
   }
 
-  res.render("fornecedores/editar", { fornecedor });
+  res.render("fornecedores/editar", { fornecedor, currentPath: req.originalUrl || req.path });
+});
+
+router.post("/editar/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let fornecedor = fornecedores.find(f => f.id === id);
+
+  if (!fornecedor) {
+    return res.redirect("/fornecedores");
+  }
+
+  const { razaoSocial, cnpj, email, telefone, cidade } = req.body;
+
+  fornecedor.razaoSocial = razaoSocial;
+  fornecedor.cnpj = cnpj;
+  fornecedor.email = email;
+  fornecedor.telefone = telefone;
+  fornecedor.cidade = cidade;
+
+  res.redirect("/fornecedores");
 });
 
 module.exports = router;
