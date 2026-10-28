@@ -1,5 +1,3 @@
-# GreenFlow
-
 ## Nome do Projeto
 GreenFlow
 
